@@ -1,5 +1,7 @@
 #pragma once
 #include <QImage>
+#include <cmath>
+
 class Filters
 {
 public:
@@ -59,6 +61,16 @@ public:
 	QColor calculateNewPixelColor(QImage photo, int x, int y, int radius);
 	QImage calculateNewImagePixMap(const QImage& photo, int radius);
 };
+
+class Wave_Filter :public Filters
+{
+public:
+	Wave_Filter() {};
+	~Wave_Filter() {};
+	QColor calculateNewPixelColor(QImage photo, int x, int y, int radius);
+	QImage calculateNewImagePixMap(const QImage& photo, int radius);
+};
+
 
 class Matrix_filter : public Filters {
 public:
@@ -181,3 +193,4 @@ public:
 	};
 	~Sharpness_Filter2() {};
 };
+

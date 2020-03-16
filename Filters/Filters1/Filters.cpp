@@ -147,8 +147,11 @@ QImage Brightness::calculateNewImagePixMap(const QImage& photo, int radius)
 
 QColor Shift::calculateNewPixelColor(QImage photo, int x, int y, int radius)
 {
+	if (x + 200 >= photo.width())
+	{
+		return QColor(0, 0, 0);
+	}
 	QColor color = photo.pixelColor(x + 200, y);
-	color.setRgb(clamp<int>(color.red(), 255, 0), clamp<int>(color.green(), 255, 0), clamp<int>(color.blue(), 255, 0));
 	return color;
 }
 
@@ -156,18 +159,33 @@ QImage Shift::calculateNewImagePixMap(const QImage& photo, int radius)
 {
 	QImage result_Image(photo);
 
-	for (int x = 0; x < photo.width() - 200; x++)
+	for (int x = 0; x < photo.width(); x++)
 		for (int y = 0; y < photo.height(); y++)
 		{
-
 			QColor photo_color = calculateNewPixelColor(photo, x, y, radius);
 			result_Image.setPixelColor(x, y, photo_color);
 		}
-	for (int x = photo.width() - 200; x < photo.width(); x++)
+	return result_Image;
+}
+
+QColor Wave_Filter::calculateNewPixelColor(QImage photo, int x, int y, int radius)
+{
+	const double PI = 3.141592653589793;
+	if (x + 20 * sin((2 * PI * y) / 60) >= photo.width() && x + 20 * sin((2 * PI * y) / 60) <= 0)
+		return photo.pixelColor(x, y);
+	QColor color = photo.pixelColor(x + 20*sin((2* PI * y)/60), y);
+	return color;
+}
+
+QImage Wave_Filter::calculateNewImagePixMap(const QImage& photo, int radius)
+{
+	QImage result_Image(photo);
+
+	for (int x = 0; x < photo.width(); x++)
 		for (int y = 0; y < photo.height(); y++)
 		{
-
-			result_Image.setPixelColor(x, y, 255);
+			QColor photo_color = calculateNewPixelColor(photo, x, y, radius);
+			result_Image.setPixelColor(x, y, photo_color);
 		}
 	return result_Image;
 }
